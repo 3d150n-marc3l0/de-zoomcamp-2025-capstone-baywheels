@@ -39,4 +39,6 @@ models:
   bay_wheels:
     # Applies to all files under models/staging/
     staging:
+      +materialized: view
+    core:
       +materialized: table
