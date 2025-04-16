@@ -175,7 +175,7 @@ cython_debug/
 
 
 gcp-credentials.json
-
+de-zoomcamp-bay-wheels-*.json
 
 # Terraform
 # Local .terraform directories
@@ -219,3 +219,6 @@ terraform/terraform.rc
 
 # Ignore terraform locks
 terraform/.terraform.lock.hcl
+
+
+kestra/*.zip

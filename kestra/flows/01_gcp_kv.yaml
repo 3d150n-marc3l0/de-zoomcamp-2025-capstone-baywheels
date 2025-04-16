@@ -7,11 +7,8 @@ tasks:
     key: GCP_CREDS
     kvType: JSON
     value: |
-      {
-        "type": "service_account",
-        "project_id": "zoomcamp-de-452200",
-        "private_key_id": "b61f52ce2ec65c31d569d6ce913cbc26c80d2e41",
-      }
+      # TODO replace with your credential json
+
 
   - id: gcp_project_id
     type: io.kestra.plugin.core.kv.Set
@@ -23,17 +20,17 @@ tasks:
     type: io.kestra.plugin.core.kv.Set
     key: GCP_LOCATION
     kvType: STRING
-    value: europe-southwest1  # Madrid
+    value: europe-southwest1  # TODO replace with your location
 
   - id: gcp_bucket_name
     type: io.kestra.plugin.core.kv.Set
     key: GCP_BUCKET_NAME
     kvType: STRING
-    value: de_zoomcamp_bay_wheels_raw_bucket # RAW DATA
+    value: de_zoomcamp_bay_wheels_raw_bucket # TODO replace with your bucket name
 
   - id: gcp_dataset
     type: io.kestra.plugin.core.kv.Set
     key: GCP_DATASET
     kvType: STRING
-    value: bike_data
+    value: bike_data   # TODO replace with your dataset id
 
