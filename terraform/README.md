@@ -21,12 +21,12 @@ Within the project we have the following file structure:
 * [gcp-credentials.json](gcp-credentials.json). This file should contain your GCP project credentials.
 
 
-## GCP setup
+## GCP Setting up
 
-This project creates the infrastructure in GCP because you must first configure your account, create a project, and set up the corresponding permissions. See the "GCP Configuration" document.
+This project creates the infrastructure in GCP because you must first configure your account, create a project, and set up the corresponding permissions. See the [GCP Setting up](gcp_overview.md#initial-setup) document.
 
 
-## GCP Credential Setting
+## Credential Setting up
 
 This IaC project uses GCP as a cloud provider, so we need to configure the credentials so that Terraform can create the project infrastructure.
 
