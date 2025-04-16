@@ -126,12 +126,14 @@ commands will detect it and remind you to do so if necessary.
 
 ### Review the execution plan:
 
+To view the resources that Terraform will create in the GCP cloud provider, we run the following command:
+
 ```bash
 terraform plan
 ```
 
-
 The result of executing the command should return a result similar to the following:
+
 ```bash
 Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following
 symbols:
@@ -162,11 +164,14 @@ Changes to Outputs:
 
 ### Apply the changes:
 
+To apply the changes to the GCP cloud provider, we run the following command:
+
 ```bash
 terraform apply -auto-approve
 ```
 
 The result of executing the command should return a result similar to the following:
+
 ```bash
 Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following
 symbols:
