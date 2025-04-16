@@ -6,11 +6,11 @@ Within the project we have the following file structure:
 
 ```plaintext
 .
-├── main.tf            # Define los recursos de infraestructura.
-├── providers.tf       # Configura los proveedores de la infraestructura.
-├── output.tf          # Define las salidas que Terraform mostrará al aplicar cambios.
-├── variables.tf       # Declara las variables que serán utilizadas en la configuración.
-└── terraform.tfvars    # Asigna valores específicos a las variables definidas en `variables.tf`.
+├── main.tf             # Defines infrastructure resources.
+├── providers.tf        # Configure infrastructure providers.
+├── output.tf           # Defines the outputs that Terraform will display when applying changes.
+├── variables.tf        # Declare the variables that will be used in the configuration.
+└── terraform.tfvars    # Assigns specific values ​​to variables defined in `variables.tf`.
 ```
 
 * [main.tf](main.tf). This is the main file where you define the infrastructure resources you want to manage with Terraform. This is where you declare instances, buckets, datasets, tables, etc..
@@ -20,11 +20,46 @@ Within the project we have the following file structure:
 * [terraform.tfvars](terraform.tfvars). This file contains the actual values ​​of the variables defined in variables.tf.
 * [gcp-credentials.json](gcp-credentials.json). This file should contain your GCP project credentials.
 
-```bash
+
+## GCP setup
+
+This project creates the infrastructure in GCP because you must first configure your account, create a project, and set up the corresponding permissions. See the "GCP Configuration" document.
+
+
+## GCP Credential Setting
+
+This IaC project uses GCP as a cloud provider, so we need to configure the credentials so that Terraform can create the project infrastructure.
+
+To do this, we will create the `terraform.tfvars` file that contains the following variables.
+* **credentials**. Specifies the path to the JSON file with the GCP provider credentials.
+* **project_id**. Project identifier in GCP
+* **region**. Region where the GCP project was created.
+* **gcs_bucket_name**. Bucket name in GCS
+* **gcs_storage_class**. Bucket storage class
+* **bigquery_dataset_id**. Bigquery dataset identifier in GCP.
+
+Below is some sample content of the variables used by terraform.
+
+```plaintext
+# GCP: Path to the GCP credentials file
+credentials          = "../gcp-credentials.json"
+# GCP: Project ID
+project_id           = "zoomcamp-de-452200"
+# GCP: Region
+region               = "europe-southwest1"
+
+# GCP: Bucket name in GCS
+gcs_bucket_name      = "de_zoomcamp_bay_wheels_raw_bucket"
+gcs_storage_class    = "STANDARD"
+
+# GCP: BigQuery dataset identifier.
+bigquery_dataset_id  = "bike_data"
 
 ```
 
-## Configuration
+Copy the above content to a terraform.tfvars file and replace the variable values ​​with the values ​​from your GCP account configuration.
+
+## Terrafrom Setting
 
 ### Install Terraform
 
