@@ -222,3 +222,4 @@ terraform/.terraform.lock.hcl
 
 
 kestra/*.zip
+kestra/flows/01_gcp_kv.local.yaml
