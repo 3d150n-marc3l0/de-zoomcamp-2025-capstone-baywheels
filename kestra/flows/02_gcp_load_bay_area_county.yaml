@@ -1,0 +1,61 @@
+id: 02_gcp_load_bay_area_county
+namespace: bay-wheels
+description: |
+  Best to add a label `backfill:true` from the UI to track executions created via a backfill.
+  CSV data used here comes from    : https://data.sfgov.org/resource/wamw-vt4s.csv
+  JSON data used here comes from   : https://data.sfgov.org/resource/wamw-vt4s.json
+  GEOJSON data used here comes from: https://data.sfgov.org/resource/wamw-vt4s.geojson
+
+
+variables:
+  file_id: "{{inputs.year}}{{inputs.month}}-{{inputs.baywheels}}"
+  file: "{{ vars.file_id }}-tripdata.csv"
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/bay_area_county_polygons.csv"
+  table: "{{kv('GCP_DATASET')}}.bay_area_county"
+
+
+tasks:
+  - id: http_download
+    type: io.kestra.plugin.core.http.Download
+    uri: https://data.sfgov.org/resource/wamw-vt4s.csv
+
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{ outputs.http_download.uri }}"
+    to: "{{ render(vars.gcs_file) }}"
+
+
+  - id: bq_bay_area_county_table_ext
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+          CREATE OR REPLACE EXTERNAL TABLE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_ext`
+          (
+              geometry STRING OPTIONS (description = 'geometry'),
+              county_id STRING OPTIONS (description = 'county_id: "classic_bike"=, "electric_bike"='),
+              fipsstco STRING OPTIONS (description = 'fipsstco: "classic_bike"=, "electric_bike"='),
+              county_name STRING OPTIONS (description = 'county_name')
+          )
+          OPTIONS (
+              format = 'CSV',
+              field_delimiter = ',',
+              quote = '"',
+              uris = ['{{render(vars.gcs_file)}}'],
+              skip_leading_rows = 1,
+              ignore_unknown_values = TRUE
+          );
+
+
+  - id: purge_files
+    type: io.kestra.plugin.core.storage.PurgeCurrentExecutionFiles
+    description: If you'd like to explore Kestra outputs, disable it.
+    disabled: false
+
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
+
