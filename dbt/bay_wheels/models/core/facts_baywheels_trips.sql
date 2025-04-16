@@ -10,6 +10,8 @@
   )
 }}
 
+
+
 SELECT
     t.ride_id,
     t.rider_type,
@@ -17,10 +19,16 @@ SELECT
     t.started_at,
     t.ended_at,
     t.duration_min,
-    COALESCE(t.start_station_id, 'NA') as start_station_id,
-    COALESCE(t.start_station_name, 'NO STATION') as start_station_name,
-    COALESCE(t.end_station_id,'NA') as end_station_id,
-    COALESCE(t.end_station_name, 'NO STATION') as end_station_name,
+    --COALESCE(t.start_station_id, 'NA') as start_station_id,
+    --COALESCE(t.start_station_name, 'NO STATION') as start_station_name,
+    t.start_station_id,
+    t.start_station_name,
+    --pst.station_id as close_start_station_id,
+    --COALESCE(t.end_station_id,'NA') as end_station_id,
+    --COALESCE(t.end_station_name, 'NO STATION') as end_station_name,
+    t.end_station_id,
+    t.end_station_name,
+    --dst.station_id as close_end_station_id,
     --t.start_lat,
     --t.start_lng,
     ST_GEOGPOINT(t.start_lng, t.start_lat) as start_loc,
@@ -41,17 +49,46 @@ SELECT
     EXTRACT(MONTH FROM t.started_at) as pickup_month,
     EXTRACT(QUARTER FROM t.started_at) as pickup_quarter,
     EXTRACT(YEAR FROM t.started_at) as pickup_year,
+
+    -- distance in km
     ST_DISTANCE(
       ST_GEOGPOINT(t.start_lng, t.start_lat),
-      ST_GEOGPOINT(t.end_lng, t.end_lat)) / 1000 AS distance_km
+      ST_GEOGPOINT(t.end_lng, t.end_lat)) / 1000 AS distance_km,
+
+    pbac.county_id   AS start_county_id, 
+    pbac.county_name AS start_county_name,
+    pbac.geometry    AS start_geometry,
+    dbac.county_id   AS end_county_id,
+    dbac.county_name AS end_county_name,
+
+    -- update
+    t.updated_at
   FROM
     {{ ref('stg_baywheels_trips') }} t
+  -- Start station
   LEFT JOIN
     {{ ref('dim_stations') }} pst
   ON
     t.start_station_id = pst.station_id
+    --ST_DWithin(ST_GEOGPOINT(t.start_lng, t.start_lat), pst.location, 100)     
+  -- End station
   LEFT JOIN
     {{ ref('dim_stations') }} dst
   ON
     t.end_station_id = dst.station_id
+    --ST_DWithin(ST_GEOGPOINT(t.end_lng, t.end_lat), dst.location, 100)
+  -- Start area county
+  LEFT JOIN 
+    {{ ref('dim_bay_area_county') }} pbac
+  ON
+    ST_WITHIN(st_geogpoint(t.start_lng, t.start_lat), pbac.geometry)
+  -- End area county
+  LEFT JOIN 
+    {{ ref('dim_bay_area_county') }} dbac
+  ON
+    ST_WITHIN(st_geogpoint(t.end_lng, t.end_lat), dbac.geometry)
+WHERE pbac.county_id IS NOT NULL AND dbac.county_id IS NOT NULL 
 
+{% if is_incremental() %}
+  AND t.updated_at > (SELECT MAX(updated_at) FROM {{ this }})
+{% endif %}
