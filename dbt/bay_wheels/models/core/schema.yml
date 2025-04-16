@@ -1,0 +1,10 @@
+version: 2
+
+models:
+  - name: dim_station
+    description: >
+      List of unique zones identified by station_id. 
+
+  - name: dim_bay_area_county
+    description: >
+      List of unique county identified by county_id. 
