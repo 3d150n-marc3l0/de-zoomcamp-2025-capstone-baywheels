@@ -2,14 +2,6 @@ id: 01_gcp_kv
 namespace: bay-wheels
 
 tasks:
-  - id: gcp_creds
-    type: io.kestra.plugin.core.kv.Set
-    key: GCP_CREDS
-    kvType: JSON
-    value: |
-      # TODO replace with your credential json
-
-
   - id: gcp_project_id
     type: io.kestra.plugin.core.kv.Set
     key: GCP_PROJECT_ID
