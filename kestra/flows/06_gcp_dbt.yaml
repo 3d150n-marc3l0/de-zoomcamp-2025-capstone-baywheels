@@ -1,4 +1,4 @@
-id: 05_gcp_dbt
+id: 06_gcp_dbt
 namespace: bay-wheels
 inputs:
   - id: dbt_command

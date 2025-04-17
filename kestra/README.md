@@ -33,10 +33,16 @@ Once the container starts, you can access the Kestra UI at [http://localhost:808
 If you prefer to add flows programmatically using Kestra's API, run the following commands:
 
 ```bash
+curl -X PUT -H "Content-Type: application/json" http://localhost:8080/api/v1/namespaces/bay-wheels/kv/GCP_CREDS -d "@../de-zoomcamp-bay-wheels-a32c8429a9fd.json"
+```
+
+```bash
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/01_gcp_kv.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/02_gcp_load_bay_area_county.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/03_gcp_load_data.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/04_gcp_load_data_by_years.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/05_gcp_load_data_scheduled.yaml
+curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/06_gcp_dbt.yaml
 ```
 ### Setup Google Cloud Platform (GCP)
 
@@ -52,6 +58,11 @@ First, adjust the following flow [`01_gcp_kv.yaml`](flows/01_gcp_kv.yaml) to inc
 
 > [!WARNING]  
 > The `GCP_CREDS` service account contains sensitive information. Ensure you keep it secure and do not commit it to Git. Keep it as secure as your passwords.
+
+### GCP Workflow: Load Taxi Data to BigQuery
+
+
+![image](images/gpc-kv.png)
 
 ### GCP Workflow: Load Taxi Data to BigQuery
 
