@@ -7,8 +7,6 @@
 * Google Cloud Storage (GCS): Data Lake
 * BigQuery: Data Warehouse
 
-(Concepts explained in Week 2 - Data Ingestion)
-
 ### Initial Setup
 
 For this course, we'll use a free version (upto EUR 300 credits). 

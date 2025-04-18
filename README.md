@@ -103,12 +103,18 @@ Within the historical dataset of Lyft Bay Wheels riders, there may be trips whos
 
 ## GCP Setting up
 
-## Infrastructure
+This project builds its infrastructure on the cloud provider GCP (Google Cloud Platform). For this reason, you must first set up your account, create a project, and configure the corresponding permissions. See the [GCP Setting up](gcp_overview.md) document for a detailed description of the steps to follow for proper use.
 
 
+## Infrastructure as Code
+
+This project creates its infrastructure on the cloud provider GCP using the Terraform tool. For this reason, you must install the Terraform client, configure GCP access credentials, and create the resources used in the project on GCP. See the [Terraform Configuration](terraform/README.md) document for a detailed description of the steps to follow for proper use.
 
 ## Data Ingestion Workflow
 
+This project uses the Kestra workflow orchestrator to create an ETL pipeline for the Bay Wheels bike dataset. For this purpose, you must start Kestra's Docker-Compose, configure GCP access credentials, run flows to load data from sources into the GCP bucket and Bigquery data warehouse; and execute data transformations to store the data in the Bigquery data warehouse. See the [Kestra Configuration](kestra/README.md) document for a detailed description of the steps to follow for proper use.
+
+## Data Transformation
 
 
 
