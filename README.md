@@ -92,20 +92,6 @@ Each monthly dataset is composed of the following fields:
 * **member_casual**. User Type. This field is of categorical type and has the following values: *Member* or *Casual*.
 
 
-
-Stations
-
-* **City**. 
-* **Station ID**. 
-* **Station Name**. 
-* **Number of Docks**. 
-* **On/Off-Street**. 
-* **EPC Status**. 
-* **Transit Status**. 
-* **Latitude**. 
-* **Longitude**. 
-
-
 Within the historical dataset of Lyft Bay Wheels riders, there may be trips whose location coordinates (latitude and longitude) are incorrect and are displayed outside the Bay Area. This can skew trip analysis, for example, when calculating trip times or distances. For this reason, we need a dataset with a geometric area for Bay Area districts to rule out trips whose locations do not appear within these locations. The San Francisco government has the dataset with limitations for [Bay Area counties](https://data.sfgov.org/Geographic-Locations-and-Boundaries/Bay-Area-County-Polygons/wamw-vt4s/about_data). This dataset is composed of the following fields:
 
 
@@ -130,7 +116,7 @@ This project uses the Kestra workflow orchestrator to create an ETL pipeline for
 
 ## Data Transformation
 
-
+This project uses dbt to perform data transformations from raw data into BigQuery tables and obtain fact tables that contain useful information for analyzing bicycle trips. The execution of dbt is done through a Kestra flow, and its configuration can be found in the [Kestra Configuration](kestra/README.md) document. The dbt tool uses the raw tables to create dimension tables and merges the dimension and trip tables to obtain the fact tables in BigQuery. See the [DBT Configuration](dbt/README.md) document for a detailed description of the steps to follow for correct use.
 
 ## Dashboard
 
