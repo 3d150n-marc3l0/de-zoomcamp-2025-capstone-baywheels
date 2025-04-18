@@ -8,6 +8,20 @@ Bay Wheels is a regional public bicycle sharing system in California's San Franc
 
 ### Objectives
 
+The objective of this project is to analyze bike-share usage patterns in the San Francisco Bay Area. The selected dataset for analysis includes the years 2023 and 2024. Specifically, we seek to answer the following questions:
+
+What is the average travel time and distance traveled by users?
+
+What type of bike is most commonly used by users?
+
+What type of user uses the bike-share system the most?
+
+What time of day is it most common to make trips?
+
+Which stations are the most popular?
+
+Which days of the week are the most trips made?
+
 
 ### Overview
 
