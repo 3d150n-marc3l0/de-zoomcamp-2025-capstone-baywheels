@@ -9,8 +9,6 @@ Within the project we have the following file structure:
 ├── flows/
 │   ├── 01_gcp_kv.yaml                       # Creating KV for GCP.
 │   ├── 02_gcp_load_bay_area_county.yaml     # Load the Bay Area counties dataset.
-│   ├── 03_gcp_load_data.yaml                # Load the Bay Area bike dataset.
-│   ├── 04_gcp_load_data_by_years.yaml       # Load the Bay Area bike dataset by years. 
 │   ├── 05_gcp_load_data_scheduled.yaml      # Load the monthly scheduled dataset of Bay Area bikes
 │   ├── 06_gcp_dbt.yaml                      # Data transformation
 ├── docker-compose.yml                       # Docker-compose para kestra.
@@ -18,9 +16,7 @@ Within the project we have the following file structure:
 
 * [01_gcp_kv.yaml](flows/01_gcp_kv.yaml). This flow creates entries in the KS store with the variables needed to access the GCP cloud provider.
 * [02_gcp_load_bay_area_county.yaml](flows/02_gcp_load_bay_area_county.yaml). This flow loads the Bay Area counties dataset into the GSC bucket and a final BigQuery table.
-* [03_gcp_load_data.yaml](flows/03_gcp_load_data.yaml). This flow loads the Bay Wheels bike dataset partitioned by year and month. The data is extracted from a zip file, the CSV dataset is loaded into a GSC bucket, the CSV dataset is loaded from GSC into a monthly BigQuery table, and finally the data is merged into the final destination BigQuery table.
-* [04_gcp_load_data_by_years.yaml](flows/04_gcp_load_data_by_years.yaml). This flow performs the same task as the "03_gcp load_data" flow, but the load is performed annually, passing as parameters the specific year to be loaded.
-* [05_gcp_load_data_scheduled.yaml ](flows/05_gcp_load_data_scheduled.yaml). This flow performs the same task as the "03_gcp load_data" flow, but on a monthly schedule.
+* [05_gcp_load_data_scheduled.yaml ](flows/05_gcp_load_data_scheduled.yaml). This flow loads the Bay Wheels bike dataset partitioned by year and month. The data is extracted from a zip file, the CSV dataset is loaded into a GSC bucket, the CSV dataset is loaded from GSC into a monthly BigQuery table, and finally the data is merged into the final destination BigQuery table. This flow performs monthly schedule.
 * [06_gcp_dbt.yaml ](flows/06_gcp_dbt.yaml ). This workflow defines the transformations that are performed by dbt.
 * [docker-compose.yml](docker-compose.yml). This docker-compose file contains the Docker configuration required for the Kestra workflow to function properly.
 
@@ -61,7 +57,6 @@ Secondly, we add each of the flows (YAML files) that are inside the [flows](flow
 ```bash
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/01_gcp_kv.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/02_gcp_load_bay_area_county.yaml
-
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/05_gcp_load_data_scheduled.yaml
 curl -X POST http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/06_gcp_dbt.yaml
 ```
@@ -162,12 +157,7 @@ classDef gsc fill:#71bd72,stroke:#000,stroke-width:1px;
 classDef purge fill:#9e979a,stroke:#000,stroke-width:1px;
 ```
 
-There are three ways to load the bay wheel bike dataset.
-* **[03_gcp_load_data](flows/03_gcp_load_data.yaml)**. This flow allows you to load the dataset for a specific month and year.
-* **[04_gcp_load_data_by_years](flows/04_gcp_load_data_by_years.yaml)**. This flow allows you to load the dataset for a specific year (twelve months).
-* **[05_gcp_load_data_scheduled](flows/05_gcp_load_data_scheduled.yaml)**. This flow runs with a monthly trigger and data prior to the current date is filled in using backfilling.  
-
-It is recommended to use the "05_gcp_load_data_scheduled" option as it is the easiest and most intuitive.
+The monthly scheduled execution by trigger of this flow is described below.
 
 ### GCP Workflow: Schedule and Backfill Full Dataset
 
