@@ -28,7 +28,7 @@ WITH station_data AS (
     s.*,
     a.county_id, a.county_name
   FROM station_data s
-  LEFT JOIN `de-zoomcamp-bay-wheels.bike_data_all.dim_bay_area_county` a
+  LEFT JOIN {{ ref('dim_bay_area_county') }} a
   ON ST_WITHIN(ST_GEOGPOINT(lng, lat), a.geometry)   
   WHERE a.county_id IS NOT NULL
 )
