@@ -134,6 +134,9 @@ This project uses the Kestra workflow orchestrator to create an ETL pipeline for
 
 ## Dashboard
 
-https://lookerstudio.google.com/reporting/55eb6c32-4723-4f15-970e-5c0886c13704
+Looker Studio was used to create the dashboard. The dashboard is publicly accessible through Dashboard: San Francisco [Bay Wheels](https://lookerstudio.google.com/reporting/55eb6c32-4723-4f15-970e-5c0886c13704).
 
 
+![image](images/Dashboard-01.png)
+
+![image](images/Dashboard-02.png)
