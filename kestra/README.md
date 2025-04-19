@@ -199,5 +199,5 @@ The result of running the above flow can be seen in the kendra executions sectio
 
 ![image](images/06_gcp_dbt_exec_results.png)
 
-A more detailed description of the transformations can be seen in [dbt bay wheels](../dbt/bay_wheels/README.md).
+A more detailed description of the transformations can be seen in [dbt bay wheels](../dbt/README.md).
 
