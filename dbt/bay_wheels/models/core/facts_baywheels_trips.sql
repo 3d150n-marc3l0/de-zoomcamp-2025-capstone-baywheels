@@ -21,6 +21,11 @@ SELECT
     t.duration_min,
     --COALESCE(t.start_station_id, 'NA') as start_station_id,
     --COALESCE(t.start_station_name, 'NO STATION') as start_station_name,
+    CASE
+        WHEN t.start_station_id IS NOT NULL AND t.end_station_id IS NOT NULL THEN
+            CONCAT(t.start_station_id, ' -> ', t.end_station_id)
+        ELSE NULL
+    END AS trajectory,
     t.start_station_id,
     t.start_station_name,
     --pst.station_id as close_start_station_id,
