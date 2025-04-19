@@ -8,6 +8,9 @@ Within the project we have the following file structure:
 ```plaintext
 bay_wheels/
 ├── dbt_project.yml
+└── analyses/
+└── seeds/
+└── macros/
 └── models/
     ├── core/
     │   ├── dim_bay_area_county.sql
@@ -17,6 +20,45 @@ bay_wheels/
     └── staging/
         ├── stg_baywheels_trips.sql
         └── schema.yaml
+```
+
+## Setttin Up
+
+The "dbt_project.yml" file contains the dbt configuration. The project name was set to "de_zoomcamp_bay_wheels".
+
+In addition, two models are defined: "staging" and "core." Views are defined in the staging model, while dimension and fact tables are defined in the "core" model.
+
+```yaml
+name: 'de_zoomcamp_bay_wheels'
+version: '1.0.0'
+config-version: 2
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'default'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"  # directory which will store compiled SQL files
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
+
+models:
+  bay_wheels:
+    # Applies to all files under models/staging/
+    staging:
+      +materialized: view
+    core:
+      +materialized: table
+
+
+vars:
+  is_test_run: false
 ```
 
 ## Raw Tables
@@ -56,7 +98,7 @@ Bay Wheels bike trip data is loaded into the "baywheels_tripdata" table. This ta
 
 In the staging model we define the raw tables "bay_area_county_ext" and "baywheels_tripdata".
 
-```json
+```yaml
 version: 2
 
 sources:
@@ -68,10 +110,11 @@ sources:
       - name: bay_area_county_ext
       - name: baywheels_tripdata
 ```
+The names *DBT_DATABASE* and *DBT_SCHEMA* define environment variables that reference GCP Project ID and dataset in Bigquery respectively.
 
-#### View: Stg_baywheels_trips
+#### View: stg_baywheels_trips
 
-The "Stg_baywheels_trips" view is constructed from the raw "baywheels_tripdata" table. The "Stg_baywheels_trips" view contains the following fields:
+The "stg_baywheels_trips" view is constructed from the raw "baywheels_tripdata" table. The "stg_baywheels_trips" view contains the following fields:
 
 * **ride_id**. Ride Identifier.
 * **rideable_type**. Ride Type. This field is of categorical type and has the following values: *classic_bike*, *electric_bike* or *electric_escooter*.
@@ -114,8 +157,11 @@ The "dim_stations" table is created by joining the start (start_station_id) and 
 * **updated_at**. Update date.
 
 
-#### Table: stg_baywheels_trips
+#### Table: facts_baywheels_trips
 
+The "facts_baywheels_trips" table contains data on Bay Wheels bike trips added monthly. To perform this loading, we use data from the "stg_baywheels_trips" view. Within the trip universe, there may be start and/or end locations very far from the San Francisco Bay Area; we need to map them to prevent them from distorting the trip analysis. To do this, we use the "dim_bay_area_county" table, which contains the county boundaries of the San Francisco Bay Area.
+
+The "facts_baywheels_trips" table contains the following fields:
 
 * **ride_id**. Ride Identifier.
 * **rideable_type**. Ride Type. This field is of categorical type and has the following values: *classic_bike*, *electric_bike* or *electric_escooter*.
@@ -147,6 +193,6 @@ Since the analysis we will perform will be based on trips at the day level, the 
 
 Finally, for our analysis, the start station of the trip is very important, which is why the table is clustered by the *start_station_id* column.
 
-The lineage of the transformations to obtain the "stg_baywheels_trips" fact table is shown below.
+The lineage of the transformations to obtain the "facts_baywheels_trips" fact table is shown below.
 
 ![image](images/dbt-dag.png)
