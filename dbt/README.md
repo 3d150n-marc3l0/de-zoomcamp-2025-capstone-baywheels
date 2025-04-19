@@ -91,14 +91,6 @@ The "Stg_baywheels_trips" view is constructed from the raw "baywheels_tripdata" 
 
 ### Core
 
-#### Table: dim_stations
-
-* **station_id**. Station id.
-* **station_name**. Station Name.
-* **location**. Coordinates with the longitude and latitude of the station.
-* **updated_at**. Update date.
-
-
 #### Table: dim_bay_area_county
 
 The dimension table "dim_bay_area_county" is created from the raw table "bay_area_county_ext." To create the table, the "geometry" column is transformed from a string to a multipolygon, and the update date is added.
@@ -107,6 +99,18 @@ The dimension table "dim_bay_area_county" is created from the raw table "bay_are
 * **county_name**. County name.
 * **fipsstco**. The Federal Information Processing Standard Publication.
 * **geometry**. Multipolygon that delimits the area of ​​a county in the San Francisco Bay Area.
+* **updated_at**. Update date.
+
+
+#### Table: dim_stations
+
+Unfortunately, a dataset with updated stations was not found for the Bay Wheels dataset. However, the start and end stations (along with their respective longitude and latitude coordinates) of a bike trip are explicitly described within the trip itself. However, upon inspection, it was found that some station locations are incorrect and appear outside the San Francisco Bay Area.
+
+The "dim_stations" table is created by joining the start (start_station_id) and end (end_station_id) stations from the "baywheels_tripdata" table. We join it with the "dim_bay_area_county" table and filter out stations that are not located in a Bay Area county. We group the stations by their station_id to avoid duplicate stations.
+
+* **station_id**. Station id.
+* **station_name**. Station Name.
+* **location**. Coordinates with the longitude and latitude of the station.
 * **updated_at**. Update date.
 
 
@@ -120,6 +124,7 @@ The dimension table "dim_bay_area_county" is created from the raw table "bay_are
 * **duration_min**. Trip duration in minutes.
 * **start_loc**. Start coordinates of the bike trip.
 * **end_loc**. End coordinates of the bike trip.
+* **trajectory**. Route from the start station to the end station.
 * **start_station_name**. Start Station Name.
 * **start_station_id**. Start Station identifier.
 * **end_station_name**. End Station Name.
@@ -134,6 +139,13 @@ The dimension table "dim_bay_area_county" is created from the raw table "bay_are
 * **pickup_year**. Year the trip was made.
 * **member_casual**. User Type. This field is of categorical type and has the following values: *Member* or *Casual*.
 * **distance_km**. Distance traveled in kilometers.
+
+
+Because bike trip data is added monthly, the data is added to this table incrementally. For this reason, this table will be *incremental*.
+
+Since the analysis we will perform will be based on trips at the day level, the partitioning will be done by the date column *started_at* with a *day* granularity.
+
+Finally, for our analysis, the start station of the trip is very important, which is why the table is clustered by the *start_station_id* column.
 
 The lineage of the transformations to obtain the "stg_baywheels_trips" fact table is shown below.
 
