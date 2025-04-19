@@ -1,8 +1,27 @@
 
-# dbt Project.
+# dbt Project
+
+## Overview
+
+Within the project we have the following file structure:
+
+```plaintext
+bay_wheels/
+├── dbt_project.yml
+└── models/
+    ├── core/
+    │   ├── dim_bay_area_county.sql
+    │   ├── dim_stations.sql
+    │   ├── facts_baywheels_trips.sql
+    │   └── schema.yml
+    └── staging/
+        ├── stg_baywheels_trips.sql
+        └── schema.yaml
+```
 
 ## Raw Tables
 
+To perform transformations with dbt, we start from the raw tables stored in the BigQuery data warehouse. The following describes raw tables in BigQuery.
 
 ### Table: bay_area_county_ext 
 The data from the San Francisco Bay Area counties dataset is loaded into the external table bay_area_county_ext. This table has the following fields:
@@ -25,24 +44,62 @@ Bay Wheels bike trip data is loaded into the "baywheels_tripdata" table. This ta
 * **start_station_id**. Start Station identifier.
 * **end_station_name**. End Station Name.
 * **end_station_id**. End Station identifier.
-* **start_lat**. Start Station Latitude.
-* **start_lng**. Start Station Longitude.
-* **end_lat**. End Station Latitude.
-* **end_lng**. End Station Longitude.
+* **start_lat**. Start latitude of the bike trip.
+* **start_lng**. Start Longitude of the bike trip.
+* **end_lat**. End latitude of the bike trip.
+* **end_lng**. End Longitude of the bike trip.
 * **member_casual**. User Type. This field is of categorical type and has the following values: *Member* or *Casual*.
 
+## Models
 
+### Staging
 
-## Dimension tables
+In the staging model we define the raw tables "bay_area_county_ext" and "baywheels_tripdata".
 
-### Table: dim_stations
+```json
+version: 2
+
+sources:
+  - name: staging
+    database: "{{ env_var('DBT_DATABASE', 'zoomcamp-de-452200') }}"
+    #database: zoomcamp-de-452200
+    schema: "{{ env_var('DBT_SCHEMA', 'bike_data_all') }}"
+    tables:
+      - name: bay_area_county_ext
+      - name: baywheels_tripdata
+```
+
+#### View: Stg_baywheels_trips
+
+The "Stg_baywheels_trips" view is constructed from the raw "baywheels_tripdata" table. The "Stg_baywheels_trips" view contains the following fields:
+
+* **ride_id**. Ride Identifier.
+* **rideable_type**. Ride Type. This field is of categorical type and has the following values: *classic_bike*, *electric_bike* or *electric_escooter*.
+* **started_at**. The started date and time.
+* **ended_at**. The end date and time.
+* **duration_min**. Trip duration in minutes.
+* **start_station_name**. Start Station Name.
+* **start_station_id**. Start Station identifier.
+* **end_station_name**. End Station Name.
+* **end_station_id**. End Station identifier.
+* **start_lat**. Start latitude of the bike trip.
+* **start_lng**. Start Longitude of the bike trip.
+* **end_lat**. End latitude of the bike trip.
+* **end_lng**. End Longitude of the bike trip.
+* **member_casual**. User Type. This field is of categorical type and has the following values: *Member* or *Casual*.
+* **updated_at**. Trip update date.
+
+### Core
+
+#### Table: dim_stations
 
 * **station_id**. Station id.
 * **station_name**. Station Name.
 * **location**. Coordinates with the longitude and latitude of the station.
 * **updated_at**. Update date.
 
-### Table: dim_bay_area_county
+
+#### Table: dim_bay_area_county
 
 The dimension table "dim_bay_area_county" is created from the raw table "bay_area_county_ext." To create the table, the "geometry" column is transformed from a string to a multipolygon, and the update date is added.
 
@@ -52,5 +109,32 @@ The dimension table "dim_bay_area_county" is created from the raw table "bay_are
 * **geometry**. Multipolygon that delimits the area of ​​a county in the San Francisco Bay Area.
 * **updated_at**. Update date.
 
+
+#### Table: stg_baywheels_trips
+
+
+* **ride_id**. Ride Identifier.
+* **rideable_type**. Ride Type. This field is of categorical type and has the following values: *classic_bike*, *electric_bike* or *electric_escooter*.
+* **started_at**. The started date and time.
+* **ended_at**. The end date and time.
+* **duration_min**. Trip duration in minutes.
+* **start_loc**. Start coordinates of the bike trip.
+* **end_loc**. End coordinates of the bike trip.
+* **start_station_name**. Start Station Name.
+* **start_station_id**. Start Station identifier.
+* **end_station_name**. End Station Name.
+* **end_station_id**. End Station identifier.
+* **start_station_loc**. Start Station coordinates of the bike trip.
+* **end_station_loc**. End Station coordinates of the bike trip.
+* **hour_of_day**. Hour of the day the trip was made.
+* **day_of_week**. Day of the week the trip was made.
+* **time_of_day**. Day timw. This field is of categorical type and has the following values: *morning*, *afternoon* and *evening*.
+* **pickup_month**. Month the trip was made.
+* **pickup_quarter**. Quarter the trip was made.
+* **pickup_year**. Year the trip was made.
+* **member_casual**. User Type. This field is of categorical type and has the following values: *Member* or *Casual*.
+* **distance_km**. Distance traveled in kilometers.
+
+The lineage of the transformations to obtain the "stg_baywheels_trips" fact table is shown below.
 
 ![image](images/dbt-dag.png)
