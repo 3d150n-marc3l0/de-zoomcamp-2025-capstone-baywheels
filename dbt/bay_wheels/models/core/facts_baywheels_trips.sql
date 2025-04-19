@@ -6,7 +6,7 @@
       'data_type': 'timestamp',
       'granularity': 'day'
     },
-    cluster_by=['start_station_id', 'rider_type']
+    cluster_by=['start_station_id']
   )
 }}
 
