@@ -25,7 +25,12 @@ Which days of the week are the most trips made?
 
 ### Overview
 
+This project ingests data from Bay Wheels bikes into a data lake. To extract knowledge, various data transformation operations are executed to visualize this knowledge and answer the questions posed above. To accomplish this task, the following steps are defined:
 
+* Create infrastructure on the cloud provider.
+* Ingest data into a data lake.
+* Transform data from the data lake to extract knowledge and store it in data warehouse.
+* Visualize extracted knowledge using dashboards.
 
 
 ## Technologies
@@ -118,11 +123,32 @@ This project uses the Kestra workflow orchestrator to create an ETL pipeline for
 
 This project uses dbt to perform data transformations from raw data into BigQuery tables and obtain fact tables that contain useful information for analyzing bicycle trips. The execution of dbt is done through a Kestra flow, and its configuration can be found in the [Kestra Configuration](kestra/README.md) document. The dbt tool uses the raw tables to create dimension tables and merges the dimension and trip tables to obtain the fact tables in BigQuery. See the [DBT Configuration](dbt/README.md) document for a detailed description of the steps to follow for correct use.
 
-## Dashboard
+## Data visualization
 
 Looker Studio was used to create the dashboard. The dashboard is publicly accessible through Dashboard: San Francisco [Bay Wheels](https://lookerstudio.google.com/reporting/55eb6c32-4723-4f15-970e-5c0886c13704).
 
+The main dashboard attempts to answer questions related to the evolution of bike use over time. In addition, it displays general counts of bike use. This dashboard includes the following sections:
+
+* **Count Metrics**: Average and total counts for time used in minutes and distance used in kilometers. In addition, the total number of trips is shown.
+
+* **Usage Segmentation**: Distribution of trips at different times of the day.
+
+* **Trip Evolution**: Three time graphs are shown that attempt to represent how usage has increased by different types of users and different types of bikes.
 
 ![image](images/Dashboard-01.png)
 
+The second dashboard addresses questions related to the most used stations. It also shows bike usage by day of the week. Trip segmentation is also provided. This dashboard includes the following sections:
+
+* **Usage Segmentation**. Trip distribution by user type and bike type.
+* **Top Trips**. It shows two graphs that attempt to represent the top trips most used by users and their segmentation by time of day.
+* **Weekly Usage**. It shows trip usage on different days of the week, segmented by bike type.
+
 ![image](images/Dashboard-02.png)
+
+The last dashboard addresses questions related to routes, trips that include the start and end stations. The dashboard shows the top most used routes. It also explains how the top routes are segmented by user type, bike type, and time of day.
+
+![image](images/Dashboard-03.png)
+
+## Reproducibility
+
+The project was developed using tools such as [Terraform](terraform/README.md), [Kestra](kestra/README.md), and [DBT](dbt/README.md), which guarantees reproducibility. Simply follow the instructions explained in each of the previous sections.
