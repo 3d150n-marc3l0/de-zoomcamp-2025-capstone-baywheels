@@ -7,7 +7,7 @@ Within the project we have the following file structure:
 
 
 ```plaintext
-.
+terraform/
 ├── main.tf             # Defines infrastructure resources.
 ├── providers.tf        # Configure infrastructure providers.
 ├── output.tf           # Defines the outputs that Terraform will display when applying changes.
@@ -55,7 +55,7 @@ gcs_bucket_name      = "de_zoomcamp_bay_wheels_raw_bucket"
 gcs_storage_class    = "STANDARD"
 
 # GCP: BigQuery dataset identifier.
-bigquery_dataset_id  = "bike_data"
+bigquery_dataset_id  = "bike_data_all"
 
 ```
 
@@ -143,15 +143,15 @@ symbols:
 
 Terraform will perform the following actions:
 
-  # google_bigquery_dataset.airplane-dataset will be created
-  + resource "google_bigquery_dataset" "airplane-dataset" {
+  # google_bigquery_dataset.bike-trips-dataset will be created
+  + resource "google_bigquery_dataset" "bike-trips-dataset" {
       ...
       ...
       + access (known after apply)
     }
 
-  # google_storage_bucket.raw-airplane-bucket will be created
-  + resource "google_storage_bucket" "raw-airplane-bucket" {
+  # google_storage_bucket.raw-bike-trips-bucket will be created
+  + resource "google_storage_bucket" "raw-bike-trips-bucket" {
       ...
       ...
       + website (known after apply)
@@ -160,8 +160,8 @@ Terraform will perform the following actions:
 Plan: 2 to add, 0 to change, 0 to destroy.
 
 Changes to Outputs:
-  + bigquery_dataset_name = "airplane_data"
-  + bucket_name           = "emmuzoo-zoomcamp-de-airplane-raw"
+  + bigquery_dataset_name = "bike_data_all"
+  + bucket_name           = "de_zoomcamp_bay_wheels_trips"
 ```
 
 ### Apply the changes:
@@ -181,14 +181,14 @@ symbols:
 
 Terraform will perform the following actions:
 
-  # google_bigquery_dataset.airplane-dataset will be created
-  + resource "google_bigquery_dataset" "airplane-dataset" {
+  # google_bigquery_dataset.bike-trips-dataset will be created
+  + resource "google_bigquery_dataset" "bike-trips-dataset" {
       ...
       ...
     }
 
-  # google_storage_bucket.raw-airplane-bucket will be created
-  + resource "google_storage_bucket" "raw-airplane-bucket" {
+  # google_storage_bucket.raw-bike-trips-bucket will be created
+  + resource "google_storage_bucket" "raw-bike-trips-bucket" {
       ...
       ...
     }
@@ -196,8 +196,8 @@ Terraform will perform the following actions:
 Plan: 2 to add, 0 to change, 0 to destroy.
 
 Changes to Outputs:
-  + bigquery_dataset_name = "airplane_data"
-  + bucket_name           = "emmuzoo-zoomcamp-de-airplane-raw"
+  + bigquery_dataset_name = "bike_data_all"
+  + bucket_name           = "de_zoomcamp_bay_wheels_trips"
 
 Do you want to perform these actions?
   Terraform will perform the actions described above.
@@ -205,18 +205,20 @@ Do you want to perform these actions?
 
   Enter a value: yes
 
-google_bigquery_dataset.airplane-dataset: Creating...
-google_storage_bucket.raw-airplane-bucket: Creating...
-google_storage_bucket.raw-airplane-bucket: Creation complete after 1s [id=emmuzoo-zoomcamp-de-airplane-raw]
-google_bigquery_dataset.airplane-dataset: Creation complete after 2s [id=projects/zoomcamp-de-452200/datasets/airplane_data]
+google_bigquery_dataset.bike-trips-dataset: Creating...
+google_storage_bucket.raw-bike-trips-bucket: Creating...
+...
+...
 
 Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-bigquery_dataset_name = "airplane_data"
-bucket_name = "emmuzoo-zoomcamp-de-airplane-raw"
+bigquery_dataset_name = "bike_data_all"
+bucket_name = "de_zoomcamp_bay_wheels_trips"
 ```
+
+If any failure occurs, it is very likely that the problem is due to the bucket name already being used.
 
 ### Delete the changes:
 
